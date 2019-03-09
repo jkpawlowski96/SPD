@@ -19,3 +19,16 @@ class Job:
             return None
 
 
+    def cmax(self, perm,jobs):
+        C = [[0] * (jobs[0].size+2) for i in range(len(perm)+2)]
+
+        for j in range(1,jobs[0].size+1):
+            for i in range(1,len(perm)+1):
+                C[j][i]=max(C[j][i-1], C[j-1][i])+jobs[i-1].time(j-1)
+
+        Cmax=0
+        for j in range(len(perm)+1):
+            for i in range(len(perm)+1):
+                Cmax=max(Cmax, C[j][i])
+                
+        return Cmax

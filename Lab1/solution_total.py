@@ -1,8 +1,14 @@
 from job import Job
+perm=[0,1,2]
+j=[]
 
+j.append(Job([2,3]))
+j.append(Job([1,2]))
+j.append(Job([3,1]))
+j.append(Job([1,1]))
+j.append(Job([2,1]))
 #jakis przyklad
-j = Job ([2, 3])
 
-print(j.time(0))
-print(j.time(1))
-print(j.time(2))
+j[0].cmax(perm,j)
+
+
