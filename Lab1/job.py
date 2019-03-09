@@ -30,5 +30,5 @@ class Job:
         for j in range(len(perm)+1):
             for i in range(len(perm)+1):
                 Cmax=max(Cmax, C[j][i])
-                
+
         return Cmax
