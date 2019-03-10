@@ -45,25 +45,26 @@ def AlgJohn2(jobs):
             G1.append([i, jobs[i].time(0), jobs[i].time(1)])
             print("G1: %d"%i)
         else:
-            G1.append([i, jobs[i].time(0), jobs[i].time(1)])
+            G2.append([i, jobs[i].time(0), jobs[i].time(1)])
             print("G2: %d"%i)
 
-    if len(G1):
-        G1[0].sort_asc(0) #sort by time on machine 0 (asc)
-    if len(G2):
-        G2[0].sort_desc(1) #sort by time on machine 1 (desc)
+    #if len(G1):
+    #    G1[0].sort_asc(0) #sort by time on machine 0 (asc)
+    #if len(G2):
+    #    G2[0].sort_desc(1) #sort by time on machine 1 (desc)
+
     G=G1+G2
     ind=[]
     #optimal order
     for i in range(len(G)):
-        ind=ind.append(G[i][0])
+        ind.append(G[i][0])
     return ind
 
 #Johnson's rule (three machines)
 def AlgJohn3(jobs):
     #makes two virtual machines (time on vm0=time(0) + time(1); time on vm1=time(1)+time(2))
     virtual_jobs_list=[]
-    for i in range(jobs):
+    for i in range(len(jobs)):
         virtual_jobs_list.append(Job([jobs[i].time(0)+jobs[i].time(1),jobs[i].time(1)+jobs[i].time(2)]))
     return AlgJohn2(virtual_jobs_list)
 
@@ -74,8 +75,10 @@ def AlgJohn(jobs):
     else:
         times=[]
         virtual_jobs_list=[]
-        for i in range(jobs):
-            for j in range(jobs-1):
+        for i in range(len(jobs)):
+            for j in range(len(jobs)-1):
+                #times on virtual machines
                 times.append(jobs[i].time(j)+jobs[i].time(j+1))
-                virtual_jobs_list.append(Job(times))
+            virtual_jobs_list.append(Job(times))
+            times=[]
         return AlgJohn(virtual_jobs_list)

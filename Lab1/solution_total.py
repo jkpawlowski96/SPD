@@ -4,10 +4,10 @@ from itertools import *
 jobs_list=[]
 
 # some jobs
-jobs_list.append(Job([3, 3]))
-jobs_list.append(Job([1 , 4]))
-jobs_list.append(Job([1 , 2]))
-#jobs_list.append(Job([5 , 1]))
+jobs_list.append(Job([3, 3, 1]))
+jobs_list.append(Job([1 , 4, 2]))
+jobs_list.append(Job([1 , 2, 1]))
+#jobs_list.append(Job([5 , 1, 9]))
 
 
 jobs_queue = range(np.shape(jobs_list)[0])  # [0, 1, 2, n]
@@ -21,4 +21,4 @@ for comb in jobs_perm:    # for all combinations
     i=i+1
 
 
-#AlgJohn(jobs_list)
+print(AlgJohn(jobs_list))
