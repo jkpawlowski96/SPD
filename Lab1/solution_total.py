@@ -12,6 +12,7 @@ jobs_queue = range(np.shape(jobs_list)[0])  # [0, 1, 2, n]
 
 jobs_perm = list(permutations(jobs_queue)) # [[1,2,3],[2,3,1]...]
 
+
 print(jobs_perm)
 i = 0
 for comb in jobs_perm:    # for all combinations

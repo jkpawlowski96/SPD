@@ -35,4 +35,3 @@ def cmax(perm, jobs):
 
     return Cmax
 
-
