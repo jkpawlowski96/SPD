@@ -24,7 +24,7 @@ j.append(Job([3,1]))
 #j.append(Job([1,1]))
 #j.append(Job([2,1]))
 
-p=[]
+p=[[0,1,2],[1,2,0]]
 P = [] #permutacja potrzebna do perm
 for i in range(0, len(j)): #powinna byc wypelniona liczbami, ktore chcemy pozamieniac, u nas indeksy zadan, czyli od 0 do ilosci zadan
     P.append(i)

@@ -25,7 +25,7 @@ class Job:
 
         for j in range(1,jobs[0].size+1): #machine number
             for i in range(1,len(perm)+1): #job number
-                C[j][i]=max(C[j][i-1], C[j-1][i])+jobs[i-1].time(j-1)
+                C[j][i]=max(C[j][i-1], C[j-1][i])+jobs[perm[i-1]].time(j-1)
 
         #end time (max of array C)
         Cmax=0
