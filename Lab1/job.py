@@ -35,3 +35,26 @@ def cmax(perm, jobs):
 
     return Cmax
 
+def AlgJohn(self, jobs):
+    #group 1 contains jobs which time(0)<time(1)
+    #group 2 contains other jobs
+    G1=[]
+    G2=[]
+    for i in range(len(jobs)):
+        if jobs[i].time(0)<jobs[i].time(1):
+            G1.append([i, jobs[i].time(0), jobs[i].time(1)])
+            print("G1: %d"%i)
+        else:
+            G1.append([i, jobs[i].time(0), jobs[i].time(1)])
+            print("G2: %d"%i)
+
+    if len(G1):
+        G1[0].sort(0) #sort by time on machine 0
+    if len(G2):
+        G2[0].sort(1) #sort by time on machine 1
+    G=G1+G2
+    ind=[]
+    #optimal order
+    for i in range(len(G)):
+        ind=ind.append(G[i][0])
+    return ind

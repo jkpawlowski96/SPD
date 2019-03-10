@@ -17,3 +17,5 @@ i = 0
 for comb in jobs_perm:    # for all combinations
     print('Time of comb ', i, ':', cmax(comb, jobs_list))      #time of combination
     i=i+1
+
+#AlgJohn(jobs_list)
