@@ -43,10 +43,8 @@ def AlgJohn2(jobs):
     for i in range(len(jobs)):
         if jobs[i].time(0)<jobs[i].time(1):
             G1.append([i, jobs[i].time(0), jobs[i].time(1)])
-            print("G1: %d"%i)
         else:
             G2.append([i, jobs[i].time(0), jobs[i].time(1)])
-            print("G2: %d"%i)
 
     #if len(G1):
     #    G1[0].sort_asc(0) #sort by time on machine 0 (asc)
