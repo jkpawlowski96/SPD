@@ -1,4 +1,5 @@
 import numpy as np
+from operator import itemgetter, attrgetter, methodcaller
 
 class Job:
     # Constructor of jobe
@@ -67,20 +68,20 @@ def AlgJohn2(jobs):
     G2=[]
     for i in range(len(jobs)):
         if jobs[i].time(0)<jobs[i].time(1):
-            G1.append([i, jobs[i].time(0), jobs[i].time(1)])
+            G1.append((jobs[i].time(0), jobs[i].time(1), i))
         else:
-            G2.append([i, jobs[i].time(0), jobs[i].time(1)])
+            G2.append((jobs[i].time(1),jobs[i].time(0), i))
 
-    #if len(G1):
-    #    G1[0].sort_asc(0) #sort by time on machine 0 (asc)
-    #if len(G2):
-    #    G2[0].sort_desc(1) #sort by time on machine 1 (desc)
+    if len(G1):
+        G1.sort()
+    if len(G2):
+        G2.sort(reverse=True)
 
     G=G1+G2
     ind=[]
     #optimal order
     for i in range(len(G)):
-        ind.append(G[i][0])
+        ind.append(G[i][2])
     return ind
 
 #Johnson's rule (three machines)
@@ -98,10 +99,13 @@ def AlgJohn(jobs):
     else:
         times=[]
         virtual_jobs_list=[]
-        for i in range(len(jobs)):
-            for j in range(len(jobs)-1):
+        print(jobs[0].size)
+        for i in range(jobs[0].size):
+            for j in range(len(jobs)):
                 #times on virtual machines
-                times.append(jobs[i].time(j)+jobs[i].time(j+1))
-            virtual_jobs_list.append(Job(times))
+                #times.append(jobs[j].time(i)+jobs[j].time(i+1))
+                print('.')
+            print(times)
+            #virtual_jobs_list.append(Job(times))
             times=[]
-        return AlgJohn(virtual_jobs_list)
+       # return AlgJohn(virtual_jobs_list)
