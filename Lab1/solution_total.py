@@ -21,13 +21,13 @@ Tmin=0
 i = 0
 for comb in jobs_perm:    # for all combinations
     if Tmin==0:
-        Tmin=cmax(comb, jobs_list)
+        Tmin=sim_time_queue(comb, jobs_list)
     else:
-        Tmin=min(Tmin, cmax(comb, jobs_list))
+        Tmin=min(Tmin, sim_time_queue(comb, jobs_list))
     #print('Time of comb sim_ ', i, ':', sim_time_queue(comb, jobs_list))      #time of combination
     #print('Time of comb cmax ', i, ':', cmax(comb, jobs_list))      #time of combination
     i=i+1
 
 
 print('cmax perm time: ',Tmin)
-print('Alg John, time: ',cmax(AlgJohn3(jobs_list), jobs_list))
+print('Alg John, time: ',sim_time_queue(AlgJohn3(jobs_list), jobs_list))
