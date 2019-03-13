@@ -29,8 +29,6 @@ def c_max(queue, jobs=[Job]):
     return machines_diary[machines-1] #the last done job
 
 
-
-
 #Johnson's rule (two machines)
 def AlgJohn2(jobs):
     #group 1 contains jobs which time(0)<time(1)
@@ -44,9 +42,9 @@ def AlgJohn2(jobs):
             G2.append((jobs[i].time(1),jobs[i].time(0), i))
 
     if len(G1):
-        G1.sort()
+        G1.sort() #asc
     if len(G2):
-        G2.sort(reverse=True)
+        G2.sort(reverse=True) #desc
 
     G=G1+G2
     ind=[]
@@ -63,8 +61,28 @@ def AlgJohn3(jobs):
         virtual_jobs_list.append(Job([jobs[i].time(0)+jobs[i].time(1),jobs[i].time(1)+jobs[i].time(2)]))
     return AlgJohn2(virtual_jobs_list)
 
-#Johnson's rule (k machines), I'm not sure if it's correct...
 def AlgJohn(jobs):
+    if jobs[0].size==2:
+        for i in range(len(jobs)):
+            if jobs[i].size==2:
+                is_ok=True
+            else:
+                is_ok=False
+        if is_ok:
+            return AlgJohn2(jobs)
+    elif jobs[0].size==3:
+        for i in range(len(jobs)):
+            if jobs[i].size==3:
+                is_ok=True
+            else:
+                is_ok=False
+        if is_ok:
+            return AlgJohn3(jobs)
+    else:
+        print('Incorrect data!')
+
+#Johnson's rule (k machines)
+def AlgJohnk(jobs):
     if jobs[0].size==2:
         return AlgJohn2(jobs)
     else:
