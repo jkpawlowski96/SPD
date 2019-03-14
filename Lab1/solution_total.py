@@ -1,25 +1,31 @@
 from itertools import *
 from algorithms import *
+import time as t
 
-jobs_list=[]
+clock=0#clock
+
+def mtime(opt='start'):
+    global clock
+
+    if opt == 'start':
+        #clock=time.time()
+        clock =t.time()
+
+    if opt =='stop':
+        clock = t.time()-clock
+        print('Measured time:',clock,'s')
+        return clock
 
 
-jobs_list=jobs_load()
+#Load jobs from file
+jobs_list=jobs_load('./ta000.txt')
 
-# some jobs
-'''jobs_list.append(Job([5 , 1, 2]))
-jobs_list.append(Job([1,1, 1]))
-jobs_list.append(Job([3,2, 2]))
-jobs_list.append(Job([1 , 2,1]))
-jobs_list.append(Job([12 , 2, 1]))
-jobs_list.append(Job([1 , 5, 5]))
-'''
-
+#List of jobs_index
 jobs_queue = range(np.shape(jobs_list)[0])  # [0, 1, 2, n]
 
+#Total permutation of jobs
 jobs_perm = list(permutations(jobs_queue)) # [[1,2,3],[2,3,1]...]
 
-Tmin=0
 
 i = 0
 
