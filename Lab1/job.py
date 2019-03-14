@@ -26,6 +26,23 @@ class Job:
             print('Job time() size error')
             return None
 
+def num_of_machines(jobs):
+    #returns number of machines 0 if jobs list is empty and -1 if number of machines is different
+    nmin=0;
+    nmax=0;
+    if(len(jobs)>0):
+        nmin=nmax=jobs[0].size
+        for i in range (1,len(jobs)):
+            if jobs[i].size < nmin:
+                nmin=jobs[i].size
+            elif jobs[i].size > nmax:
+                nmax=jobs[i].size
+        if nmin == nmax:
+            return nmin
+        else:
+            return 0
+    else:
+        return 0
 
 def jobs_load(file_path='./data.txt'):
     """
