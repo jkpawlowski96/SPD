@@ -1,5 +1,6 @@
 from job import *
 
+
 def c_max(queue, jobs=[Job]):
     """
     Simulate process
@@ -8,6 +9,12 @@ def c_max(queue, jobs=[Job]):
     :return: Total Time
     """
     def sim_time(job, machines_diary):
+        """
+        Simulate job
+        :param job: times on machines
+        :param machines_diary: last done job on machines
+        :return:
+        """
         machines_list = range(0, np.shape(job.time_on_machine)[0])
         time = 0
 

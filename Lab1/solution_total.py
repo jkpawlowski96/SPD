@@ -18,13 +18,13 @@ def mtime(opt='start'):
 
 
 #Load jobs from file
-jobs_list=jobs_load('./ta000.txt')
+jobs_list=jobs_load('./ta001.txt')
 
 #List of jobs_index
 jobs_queue = range(np.shape(jobs_list)[0])  # [0, 1, 2, n]
 
-#Total permutation of jobs
-jobs_perm = list(permutations(jobs_queue)) # [[1,2,3],[2,3,1]...]
+#Total permutation of jobs iterator
+jobs_perm = permutations(jobs_queue) # [[1,2,3],[2,3,1]...]
 
 
 Tmin=0

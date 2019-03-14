@@ -44,6 +44,7 @@ def num_of_machines(jobs):
     else:
         return 0
 
+
 def jobs_load(file_path='./ta000.txt'):
     """
     Load jobs from file.txt in format:
