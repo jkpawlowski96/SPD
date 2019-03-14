@@ -27,7 +27,7 @@ class Job:
             return None
 
 
-def jobs_load(file_path='./data.txt'):
+def jobs_load(file_path='./ta000.txt'):
     """
     Load jobs from file.txt in format:
                     1 2 4
@@ -38,11 +38,22 @@ def jobs_load(file_path='./data.txt'):
     """
     with open(file_path, 'r') as f:
         jobs_list=[]
+        lines=[]
+
+        '''Load NAME and PARAMETERS'''
         for line in f:
-            values=line.rstrip().split(' ')
-            values=[int(i) for i in values]
-            jobs_list.append(Job(values))
+            lines.append(line)
+        name=lines.pop(0)
+        param=lines.pop(0).rstrip().split(' ')
+        jobs=int(param[0])
+        machines=int(param[1])
+        del param
+        """Load times"""
+        for line in lines:
             if 'str' in line:
                 break
+            values = [int(i) for i in line.split()]
+            jobs_list.append(Job(values))
+
     return jobs_list
 
