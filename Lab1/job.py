@@ -1,4 +1,5 @@
 import numpy as np
+import random
 from operator import itemgetter, attrgetter, methodcaller
 
 
@@ -75,3 +76,12 @@ def jobs_load(file_path='./ta000.txt'):
 
     return jobs_list
 
+def test_jobs(jobs, machines):
+    jobs_list=[]
+    times=[]
+    for i in range(jobs):
+        for j in range(machines):
+            times.append(random.randint(1,30))
+        jobs_list.append(Job(times))
+        times=[]
+    return jobs_list

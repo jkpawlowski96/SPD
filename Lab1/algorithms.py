@@ -76,43 +76,19 @@ def AlgJohn(jobs):
         return AlgJohn2(jobs)
     elif num==3:
         return AlgJohn3(jobs)
+    elif num>3:
+        return AlgJohnk(jobs)
     else:
         return 0#-1
 
-    '''
-    if jobs[0].size==2:
-        for i in range(len(jobs)):
-            if jobs[i].size==2:
-                is_ok=True
-            else:
-                is_ok=False
-        if is_ok:
-            return AlgJohn2(jobs)
-    elif jobs[0].size==3:
-        for i in range(len(jobs)):
-            if jobs[i].size==3:
-                is_ok=True
-            else:
-                is_ok=False
-        if is_ok:
-            return AlgJohn3(jobs)
-    else:
-        print('Incorrect data!')
-'''
+
 #Johnson's rule (k machines)
 def AlgJohnk(jobs):
     if jobs[0].size==2:
         return AlgJohn2(jobs)
     else:
-        times=[]
-        virtual_jobs_list=[]
-        print(jobs[0].size)
-        for i in range(jobs[0].size):
-            for j in range(len(jobs)):
-                #times on virtual machines
-                #times.append(jobs[j].time(i)+jobs[j].time(i+1))
-                print('.')
-            print(times)
-            #virtual_jobs_list.append(Job(times))
-            times=[]
-       # return AlgJohn(virtual_jobs_list)
+        virtual_jobs_list = []
+        for i in range(len(jobs)):
+            virtual_jobs_list.append(Job([jobs[i].time(0), jobs[i].time(jobs[i].size-1)]))
+        return AlgJohn2(virtual_jobs_list)
+
