@@ -27,7 +27,7 @@ jobs_queue = range(np.shape(jobs_list)[0])  # [0, 1, 2, n]
 jobs_perm = list(permutations(jobs_queue)) # [[1,2,3],[2,3,1]...]
 
 
-i = 0
+Tmin=0
 
 if num_of_machines(jobs_list) != 0:
     for comb in jobs_perm:    # for all combinations
@@ -41,7 +41,7 @@ if num_of_machines(jobs_list) != 0:
                 order=comb
         #print('Time of comb sim_ ', i, ':', sim_time_queue(comb, jobs_list))      #time of combination
         #print('Time of comb cmax ', i, ':', cmax(comb, jobs_list))      #time of combination
-        i=i+1
+
 else:
     print('Cmax, incorrect data!')
 
