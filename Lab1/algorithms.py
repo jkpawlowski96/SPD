@@ -88,7 +88,10 @@ def AlgJohnk(jobs):
         return AlgJohn2(jobs)
     else:
         virtual_jobs_list = []
+        times=[]
         for i in range(len(jobs)):
-            virtual_jobs_list.append(Job([jobs[i].time(0), jobs[i].time(jobs[i].size-1)]))
-        return AlgJohn2(virtual_jobs_list)
-
+            for j in range(jobs[i].size-1):
+                times.append(jobs[i].time(j)+jobs[i].time(j+1))
+            virtual_jobs_list.append(Job(times))
+            times=[]
+        return AlgJohnk(virtual_jobs_list)
