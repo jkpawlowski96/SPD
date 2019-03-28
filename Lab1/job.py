@@ -27,6 +27,7 @@ class Job:
             print('Job time() size error')
             return None
 
+
 def num_of_machines(jobs):
     #returns number of machines 0 if jobs list is empty and -1 if number of machines is different
     nmin=0;
@@ -75,6 +76,7 @@ def jobs_load(file_path='./ta000.txt'):
             jobs_list.append(Job(values))
 
     return jobs_list
+
 
 def test_jobs(jobs, machines):
     jobs_list=[]
