@@ -1,7 +1,7 @@
 import numpy as np
 import random
 from operator import itemgetter, attrgetter, methodcaller
-
+from instance import Instance
 
 class Job:
     """
@@ -76,6 +76,56 @@ def jobs_load(file_path='./ta000.txt'):
             jobs_list.append(Job(values))
 
     return jobs_list
+
+
+def instance_load(instance='all', file_path='./FSTA.txt'):
+    """
+    Load jobs from file.txt in format:
+                    1 2 4
+                    4 6 8
+                    1 3 4
+    :param file_path: path to .txt file
+    :return: list(Job)
+    """
+
+    with open(file_path, 'r') as f:
+        instance_list = []
+        loading = 0
+        '''Load NAME and PARAMETERS'''
+        for line in f:
+            if loading == 1:
+                lines.append(line)
+                loading = 2
+                continue
+            if loading == 2:
+                if line is "\n":
+                    loading = 0
+                    name = lines.pop(0)[:-1]
+                    param = lines.pop(0).rstrip().split(' ')
+                    jobs = int(param[0])
+                    machines = int(param[1])
+                    """Load times"""
+                    for line_x in lines:
+                        if 'str' in line_x:
+                            break
+                        values = [int(i) for i in line_x.split()]
+                        jobs_list.append(Job(values))
+                    instance_list.append(Instance(name=name, jobs_list=jobs_list, jobs=jobs, machines=machines))
+                    continue
+                else:
+                    lines.append(line)
+                    continue
+            else:
+                if line[0] == 't' and line[1] == 'a':
+                    jobs_list = []
+                    lines = []
+                    lines.append(line)
+                    loading = 1
+                    continue
+    if instance == 'all':
+        return instance_list
+    else:
+        return [x for x in instance_list if x.name == instance][0]
 
 
 def test_jobs(jobs, machines):
