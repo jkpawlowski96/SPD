@@ -142,3 +142,64 @@ def NEH(jobs):
         for k in range(len(perm)):
             tmp_perm.append(perm[k])
     return perm
+
+def cmax(perm, jobs):
+    #array of end times (i-1 job on j-1 machine), now filled with 0
+    Cd = [[0] * (jobs[0].size+2) for i in range(len(perm)+2)] #
+    Cw = [[0] * (jobs[0].size+2) for i in range(len(perm)+2)]
+   
+
+    for j in range(1,jobs[0].size+1): #machine number+1
+        for i in range(1,len(perm)+1): #job number+1
+            Cd[i][j]=max(Cd[i][j-1], Cd[i-1][j])+jobs[perm[i-1]].time(j-1) #coming
+
+    for j in range(jobs[0].size,0,-1): #machine number+1
+        for i in range(len(perm),0,-1): #job number+1
+            Cw[i][j]=max(Cw[i][j+1], Cw[i+1][j])+jobs[perm[i-1]].time(j-1) #outgoing
+
+    return Cd,Cw
+
+def bestperm(perm, index, jobs):
+    Cd, Cw=cmax(perm, jobs)
+    cmaxlist=[]
+    times=[]
+    td=[0]*(jobs[0].size+1)
+    
+    for i in range(len(perm)+1):
+        for j in range(1,len(td)):
+            td[j]=max(td[j-1], Cd[i][j])+jobs[index].time(j-1)
+            times.append(td[j]+Cw[i+1][j])
+        cmaxlist.append(max(times))
+        times=[]
+        td=[0]*(jobs[0].size+1)
+
+    mintime=max(cmaxlist)
+    ind=0
+    for i in range(len(cmaxlist)): #looking for min cmax
+        if cmaxlist[i]<mintime:
+            mintime=cmaxlist[i]
+            ind=i #and index of min cmax
+            
+    #print(cmaxlist,'   wstawiam ',index, ' na pozycje ', ind)
+    perm.insert(ind,index) #new perm (+index on ind position)
+    return perm
+
+def QNEH(jobs):
+    v_jobslist=[] # virtal jobs list (only 1 machine, time=time(0)+time(1)+...+time(n))
+    for i in range(len(jobs)):
+        sum=0
+        for j in range(jobs[i].size):
+            sum=sum+jobs[i].time(j)
+        v_jobslist.append([sum, len(jobs)-i])
+
+
+    v_jobslist.sort(reverse=True)
+    for i in range (len(v_jobslist)):
+        v_jobslist[i][1]=(v_jobslist[i][1]-len(v_jobslist))*(-1)
+
+    
+    perm=[] #best queue
+    perm.append(v_jobslist[0][1]) #first job (max time)
+    for i in range(1, len(v_jobslist)):
+        perm=bestperm(perm, v_jobslist[i][1], jobs)
+    return perm
