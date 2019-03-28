@@ -8,91 +8,43 @@ def mtime(opt='start'):
     global clock
 
     if opt == 'start':
-        #clock=time.time()
         clock =t.time()
 
     if opt =='stop':
         clock = t.time()-clock
-        print('Measured time:',clock,'s')
+        #print('Measured time:',clock,'s')
         return clock
 
-#Load jobs from file
-jobs_list=jobs_load('./ta000.txt')
+latex=open("latex.txt", "w")
+plik=[]
+for i in range(121):
+    if i<10:
+        nazwa='./ta/ta00'+str(i)+'.txt'
+    elif i<100:
+        nazwa='./ta/ta0'+str(i)+'.txt'
+    else:
+        nazwa='./ta/ta'+str(i)+'.txt'
+    plik.append(nazwa)
 
-#List of jobs_index
-jobs_queue = range(np.shape(jobs_list)[0])  # [0, 1, 2, n]
-#Total permutation of jobs iterator
-jobs_perm = permutations(jobs_queue) # [[1,2,3],[2,3,1]...]
+for i in range(len(plik)):
+    print(plik[i])
+    #Load jobs from file
+    jobs_list=jobs_load(plik[i])
+    
+    mtime('start')
+    orderjohn=AlgJohn(jobs_list)
+    time_algjohn=mtime('stop')
+    mtime('start')
+    orderneh=NEH(jobs_list)
+    time_neh=mtime('stop')
+    if i<10:
+        nazwa='ta00'+str(i)+'.txt'
+    elif i<100:
+        nazwa='ta0'+str(i)+'.txt'
+    else:
+        nazwa='ta'+str(i)+'.txt'
 
-Tmin=0
-
-if num_of_machines(jobs_list) != 0:
-    for comb in jobs_perm:    # for all combinations
-        if Tmin == 0:
-            Tmin=c_max(comb, jobs_list)
-            order=comb
-        else:
-            time=c_max(comb, jobs_list)
-            if Tmin > time:
-                Tmin=time
-                order=comb
-        #print('Time of comb sim_ ', i, ':', sim_time_queue(comb, jobs_list))      #time of combination
-        #print('Time of comb cmax ', i, ':', cmax(comb, jobs_list))      #time of combination
-
-else:
-    print('Cmax, incorrect data!')
-if num_of_machines(jobs_list):
-    print('cmax perm time: ',Tmin, '   order: ', order)
-order=AlgJohn(jobs_list)
-if order != 0:
-    print('Alg John, time: ',c_max(order, jobs_list), '   order: ', order)
-else:
-    print('Alg John, incorrect data!')
-
-print(NEH(jobs_list))
-'''
-#random jobs
-num_machines=[2]
-num_jobs=[2]
-for k in range(len(num_machines)):
-    for n in range(len(num_jobs)):
-        print(num_jobs[n], 'jobs,  ', num_machines[k], 'machines ')
-        jobs_list=test_jobs(num_jobs[n], num_machines[k])
-        #for j in range(len(jobs_list)):
-        #    for i in range (jobs_list[j].size):
-       #         print(jobs_list[j].time(i),'&', end=' ')
-        #    print('\\\\')
-
-        #List of jobs_index
-        jobs_queue = range(np.shape(jobs_list)[0])  # [0, 1, 2, n]
-
-        #Total permutation of jobs
-        jobs_perm = list(permutations(jobs_queue)) # [[1,2,3],[2,3,1]...]
-
-        Tmin=0
-
-        if num_of_machines(jobs_list) != 0:
-            for comb in jobs_perm:    # for all combinations
-                if Tmin == 0:
-                    Tmin=c_max(comb, jobs_list)
-                    order=comb
-                else:
-                    time=c_max(comb, jobs_list)
-                    if Tmin > time:
-                        Tmin=time
-                        order=comb
-                #print('Time of comb sim_ ', i, ':', sim_time_queue(comb, jobs_list))      #time of combination
-                #print('Time of comb cmax ', i, ':', cmax(comb, jobs_list))      #time of combination
-
-        else:
-            print('Cmax, incorrect data!')
-
-        if num_of_machines(jobs_list):
-            print('cmax perm time: ',Tmin, '   order: ', order)
-   
-        order=AlgJohn(jobs_list)
-        if order != 0:
-            print('Alg John, time: ',c_max(order, jobs_list), '   order: ', order)
-        else:
-            print('Alg John, incorrect data!')
-'''
+    cmaxj=c_max(orderjohn, jobs_list)
+    cmaxn=c_max(orderneh, jobs_list)
+    latex.write("%s ,&, %.3f ,&,%d,&, %.3f ,&,%d \n" %(nazwa, time_algjohn*1000, cmaxj, time_neh*1000, cmaxn))
+latex.close()

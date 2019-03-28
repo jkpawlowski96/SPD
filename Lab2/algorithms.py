@@ -96,16 +96,19 @@ def AlgJohnk(jobs):
             times=[]
         return AlgJohnk(virtual_jobs_list)
 
-
 def NEH(jobs):
     v_jobslist=[] # virtal jobs list (only 1 machine, time=time(0)+time(1)+...+time(n))
     for i in range(len(jobs)):
         sum=0
         for j in range(jobs[i].size):
             sum=sum+jobs[i].time(j)
-        v_jobslist.append([sum, i])
+        v_jobslist.append([sum, len(jobs)-i])
 
-    v_jobslist.sort(reverse=True) #desc sort
+
+    v_jobslist.sort(reverse=True)
+    for i in range (len(v_jobslist)):
+        v_jobslist[i][1]=(v_jobslist[i][1]-len(v_jobslist))*(-1)
+
 
     perm=[] #best queue
     perm.append(v_jobslist[0][1]) #first job (max time)
@@ -139,4 +142,3 @@ def NEH(jobs):
         for k in range(len(perm)):
             tmp_perm.append(perm[k])
     return perm
-
