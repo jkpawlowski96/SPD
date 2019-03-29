@@ -35,8 +35,8 @@ for i in range(len(plik)):
     print(plik[i])
     #Load jobs from file
     jobs_list=jobs_load(plik[i])
-    print('QNEH: ',c_max(NEH(jobs_list), jobs_list))
-    print('modQNEH: ',c_max(QNEH(jobs_list), jobs_list))
+    print('QNEH: ',c_max(QNEH(jobs_list), jobs_list))
+    print('modQNEH: ',c_max(modQNEH(jobs_list), jobs_list))
     
 '''
     mtime('start')
