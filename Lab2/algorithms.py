@@ -203,3 +203,44 @@ def QNEH(jobs):
     for i in range(1, len(v_jobslist)):
         perm=bestperm(perm, v_jobslist[i][1], jobs)
     return perm
+
+def deljob(perm, jobs, last):
+    Cd, Cw=cmax(perm, jobs)
+    cmaxlist=[]
+    t=[0]*(jobs[0].size+1)
+    for i in range(len(perm)):
+        for j in range(len(t)):
+            t[j]=Cd[i][j]+Cw[i+2][j]
+        cmaxlist.append([max(t[j]),i])
+        t=[0]*(jobs[0].size+1)
+
+    cmaxllist.sort(reverse=True)
+    if cmaxlist[0][1]==last:
+        ind=cmaxlist[1][1]
+    else:
+        ind=cmaxlist[0][1]
+    num=perm.pop(ind)
+
+    return perm, num
+    
+def modQNEH(jobs):
+    v_jobslist=[] # virtal jobs list (only 1 machine, time=time(0)+time(1)+...+time(n))
+    for i in range(len(jobs)):
+        sum=0
+        for j in range(jobs[i].size):
+            sum=sum+jobs[i].time(j)
+        v_jobslist.append([sum, len(jobs)-i])
+
+
+    v_jobslist.sort(reverse=True)
+    for i in range (len(v_jobslist)):
+        v_jobslist[i][1]=(v_jobslist[i][1]-len(v_jobslist))*(-1)
+
+    
+    perm=[] #best queue
+    perm.append(v_jobslist[0][1]) #first job (max time)
+    for i in range(1, len(v_jobslist)):
+        perm=bestperm(perm, v_jobslist[i][1], jobs)
+        perm, num=deljob(perm, jobs, v_jobslist[i][1])
+        perm=bestperm(perm, num, jobs)
+    return perm

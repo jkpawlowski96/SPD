@@ -16,12 +16,11 @@ def mtime(opt='start'):
         return clock
     
 #Load jobs from file
-jobs_list=jobs_load('./ta/ta001.txt')
+jobs_list=jobs_load('./ta/ta054.txt')
 
-#print('NEH: ',NEH(jobs_list))
-#print('QNEH: ',QNEH(jobs_list))
 
-latex=open("latex2.txt", "w")
+#rozmiar=open("rozmiar.txt","w")
+#latex=open("latex2.txt", "w")
 plik=[]
 for i in range(121):
     if i<10:
@@ -36,14 +35,16 @@ for i in range(len(plik)):
     print(plik[i])
     #Load jobs from file
     jobs_list=jobs_load(plik[i])
-    '''
+    print('QNEH: ',c_max(NEH(jobs_list), jobs_list))
+    print('modQNEH: ',c_max(QNEH(jobs_list), jobs_list))
+    
+'''
     mtime('start')
     orderjohn=AlgJohn(jobs_list)
     time_algjohn=mtime('stop')
     mtime('start')
     orderneh=NEH(jobs_list)
     time_neh=mtime('stop')
-    '''
 
     mtime('start')
     orderqneh=QNEH(jobs_list)
@@ -53,11 +54,15 @@ for i in range(len(plik)):
     elif i<100:
         nazwa='ta0'+str(i)+'.txt'
     else:
-        nazwa='ta'+str(i)+'.txt'
+        nazwa='ta'+str(i)+'.txt' 
 
     #cmaxj=c_max(orderjohn, jobs_list)
     #cmaxn=c_max(orderneh, jobs_list)
-    #latex.write("%s ,&, %.3f ,&,%d,&, %.3f ,&,%d \n" %(nazwa, time_algjohn*1000, cmaxj, time_neh*1000, cmaxn))
-    latex.write("%.3f,&,%.3f \n" %(time_qneh, c_max(orderqneh,jobs_list)))
+    #latex.write("%s ,&, %.3f ,&,%d,&, %.3f ,&,%d \n" %(nazwa, time_algjohn, cmaxj, time_neh, cmaxn))
+    #latex.write("%.3f,&,%.3f \n" %(time_qneh, c_max(orderqneh,jobs_list)))
+    n=len(jobs_list)
+    m=jobs_list[0].size
+    rozmiar.write("%d,%d \n" %(n,m))
 latex.close()
-
+rozmiar.close()
+'''
