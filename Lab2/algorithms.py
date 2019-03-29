@@ -211,10 +211,14 @@ def deljob(perm, jobs, last):
     for i in range(len(perm)):
         for j in range(len(t)):
             t[j]=Cd[i][j]+Cw[i+2][j]
-        cmaxlist.append([max(t),i])
+        cmaxlist.append([max(t),len(perm)-i])
         t=[0]*(jobs[0].size+1)
 
-    cmaxlist.sort(reverse=True)
+    cmaxlist.sort(reverse=True) #
+
+    for i in range (len(cmaxlist)):
+        cmaxlist[i][1]=(cmaxlist[i][1]-len(perm))*(-1)
+        
     if cmaxlist[0][1]==last:
         ind=cmaxlist[1][1]
     else:
