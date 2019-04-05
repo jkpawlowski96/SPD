@@ -1,5 +1,5 @@
 from itertools import *
-from algorithms import *
+from algorithm_john import *
 import time as t
 
 clock=0#clock

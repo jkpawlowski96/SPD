@@ -1,24 +1,36 @@
 """
 SA algorithm
 """
-global k=0
-global k_max=10
-global mi=0.95
+from algorithm_cmax import cmax
+from random import randint
+from math import exp
 
-def sa(perm0, T0):
-    global k=0
+k = 0
+k_max = 10
+mi = 0.95
+
+
+def sa(perm0, t0):
+    """
+    SA algorithm
+    :param perm0:
+    :param t0:
+    :return:
+    """
+
+    global k
     # Step 1 Initialization by parameters
     perm = perm0
-    T = T0
+    t = t0
     # Step 2 Generate move
     while True:
         perm1 = swap(perm)
         # Step 3 Apply or not apply move
-        proba = move_proba(cmax(perm), cmax(perm1), T)
-        if proba >= randint(0,1)
+        proba = move_proba(cmax(perm), cmax(perm1), t)
+        if proba >= randint(0,1):
             perm = perm1
         # Step 4 cool down    
-        T = cool1(T)  
+        t = cool1(t)
         # Step 5 Stop criterion
         if k == k_max:
             break
@@ -27,26 +39,49 @@ def sa(perm0, T0):
             continue 
 
 
-def move_proba(c, c1, T):
+def move_proba(c, c1, t):
+    """
+    Chance 0 to 1 of move perm <- perm'
+    :param c: cmax(pi)
+    :param c1: cmax(pi')
+    :param t: time T
+    :return:
+    """
     if c1 >= c:
-        return exp((c-c1)/T)
+        return exp((c-c1)/t)
     else:
         return 1
 
 
-def swap(perm)
-    x = rand(len(perm))
-    y = rand(len(perm))
-    tmp=perm[x]
-    perm[x]=perm[y]
-    perm[y]=tmp
+def swap(perm):
+    """
+    Change positions of 2 random elements
+    :param perm: permutation (pi)
+    :return:
+    """
+    x = randint(0, len(perm)-1)
+    y = randint(0, len(perm)-1)
+    tmp = perm[x]
+    perm[x] = perm[y]
+    perm[y] = tmp
     return perm
 
 
-def cool1(T):
+def cool1(t):
+    """
+    Cool down by mi*T
+    :param t: time T
+    :return:
+    """
     global mi
-    return mi*T
+    return mi*t
 
-def cool2(T):
+
+def cool2(t):
+    """
+    Cool down by iterable
+    :param t: time T
+    :return:
+    """
     global k, k_max
-    return T*(k/k_max)    
+    return t*(k/k_max)
