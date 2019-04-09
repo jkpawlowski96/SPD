@@ -1,3 +1,6 @@
+from algorithm_cmax import c_max, cmax
+
+
 def NEH(jobs):
     v_jobslist = []  # virtal jobs list (only 1 machine, time=time(0)+time(1)+...+time(n))
     for i in range(len(jobs)):

@@ -1,19 +1,20 @@
 """
 SA algorithm
 """
-from algorithm_cmax import cmax
+from algorithm_cmax import c_max
 from random import randint
 from math import exp
 
 k = 0
-k_max = 10
-mi = 0.95
+k_max = 10000
+mi = 0.5
 
 
-def sa(perm0, t0):
+def sa(perm0, jobs,  t0):
     """
     SA algorithm
     :param perm0:
+    :param jobs:
     :param t0:
     :return:
     """
@@ -24,19 +25,20 @@ def sa(perm0, t0):
     t = t0
     # Step 2 Generate move
     while True:
-        perm1 = swap(perm)
+        perm1 = swap(perm.copy())
         # Step 3 Apply or not apply move
-        proba = move_proba(cmax(perm), cmax(perm1), t)
-        if proba >= randint(0,1):
+        proba = move_proba(c_max(perm.copy(), jobs.copy()), c_max(perm1.copy(), jobs.copy()), t)
+        if proba >= randint(0, 1):
             perm = perm1
         # Step 4 cool down    
-        t = cool1(t)
+        t = cool2(t)
         # Step 5 Stop criterion
-        if k == k_max:
+        if k == k_max or t <= 0:
             break
         else:
             k = k + 1
-            continue 
+            continue
+    return perm
 
 
 def move_proba(c, c1, t):
@@ -59,11 +61,13 @@ def swap(perm):
     :param perm: permutation (pi)
     :return:
     """
+    p = perm
     x = randint(0, len(perm)-1)
-    y = randint(0, len(perm)-1)
-    tmp = perm[x]
-    perm[x] = perm[y]
-    perm[y] = tmp
+    y = x
+    while y == x:
+        y = randint(0, len(perm)-1)
+    p[x] = perm[y]
+    p[y] = perm[x]
     return perm
 
 
