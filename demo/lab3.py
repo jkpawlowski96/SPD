@@ -1,5 +1,5 @@
 from itertools import *
-from algorithm_sa import  sa
+from algorithm_sa import sa
 import time as t
 from job import jobs_load
 from algorithm_neh import QNEH
@@ -22,7 +22,7 @@ def mtime(opt='start'):
 
 latex = open("latexmod.txt", "w")
 plik = []
-for i in range(100):
+for i in range(120):
     if i < 10:
         nazwa = '../ta/ta00' + str(i) + '.txt'
     elif i < 100:
@@ -52,7 +52,7 @@ for i in range(len(plik)):
     exps = 5
     for exp in range(exps):
         mtime('start')
-        order_sa = sa(order, jobs_list, 10000)
+        order_sa = sa(order, jobs_list, 1000)
         time_sa += mtime('stop')
         cmax_sa += c_max(order_sa.copy(), jobs_list.copy())
     cmax_sa /= exps
@@ -63,7 +63,7 @@ for i in range(len(plik)):
     time_sa_n = 0
     for exp in range(exps):
         mtime('start')
-        order_sa_n = sa(order_qneh.copy(), jobs_list.copy(), 10000)
+        order_sa_n = sa(order_qneh.copy(), jobs_list.copy(), 1000)
         time_sa_n += mtime('stop')
         cmax_sa_n += c_max(order_sa_n.copy(), jobs_list.copy())
     cmax_sa_n /= exps
