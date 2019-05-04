@@ -24,6 +24,85 @@ def schrange(jobs_list):
     :return:
     '''
 
+    def arg_r(v,jobs):
+        l = []
+        for i in jobs:
+            if v == jobs_list[i].head[0]:
+                l.append(i)
+        return l
+
+    def arg_q(v,jobs):
+        l = []
+        for i in jobs:
+            if v == jobs_list[i].tail[0]:
+                l.append(i)
+        return l
+
+    R = []
+    Q = []
+    for job in jobs_list:
+        R.append(job.head[0])
+
+    S = np.zeros(len(jobs_list))  # momenty rozpoczęcia wykonywania zadań
+    C = np.zeros(len(jobs_list))  # momenty zakończenia wykonywania zadań
+
+    Nn = list(range(len(jobs_list)))
+    Ng = []
+
+    order = []
+
+    # Algorymt
+    t = min(R)
+    while len(Nn) > 0 or len(Ng) > 0:
+        while len(Nn) > 0 and min(R) <= t:
+            j = arg_r(min(R), Nn)[0]
+            R.remove(min(R))
+            Nn.remove(j)
+            Ng.append(j)
+            Q.append(jobs_list[j].tail[0])
+        if len(Ng) == 0:
+            t = min(R)
+        else:
+            j = arg_q(max(Q), Ng)[0]
+            Q.remove(max(Q))
+            Ng.remove(j)
+            order.append(j)
+            t += jobs_list[j].body[0]
+
+    # S czas rozpoczecia zadania
+    first = True
+    for i in order:
+        if first:
+            S[i] = jobs_list[i].head[0]
+            i_last = i
+            first = False
+        else:
+            S[i] = max(jobs_list[i].head[0], S[i_last]+jobs_list[i_last].body[0])
+            i_last = i
+
+    # C czas zakonczenia zadania
+    for i in order:
+        C[i] = S[i] + jobs_list[i].body[0]
+
+    # Obliczenie cmax
+    cmax = []
+    for i in order:
+        cmax.append(C[i]+jobs_list[i].tail[0])
+    # Najdłuższy czas jako ostatnie zakonczone zadania
+    cmax = max(cmax)
+
+    return order, cmax
+
+
+
+def schrange_zly(jobs_list):
+    '''
+    Simulate RPQ problem
+    :param jobs_list:
+    :param order:
+    :return:
+    '''
+
     R = []
     for job in jobs_list:
         R.append(job.head[0])
@@ -37,20 +116,25 @@ def schrange(jobs_list):
     order = []
 
     # Algorymt
+    t = min(R)
     while len(Nn) > 0 or len(Ng) > 0:
-        t = min(R)
 
-        for i in Nn:
-            if jobs_list[i].head[0] == t:
+        for i in Nn.copy():
+            if jobs_list[i].head[0] <= t:
                 Ng.append(i)
                 Nn.remove(i)
-        R.remove(t)
+
+        if len(Ng) == 0:
+            t = min(R)
+
         # Znaleziono zadania o takim czasie
         if len(Ng) > 0:
 
             # Tylko jedno zadanie
             if len(Ng) == 1:
-                order.append(Ng.pop())
+                i = Ng.pop()
+                order.append(i)
+                R.remove(jobs_list[i].head[0])
 
             # Wiecej niż jedno zadanie
             else:
@@ -64,6 +148,9 @@ def schrange(jobs_list):
                     if jobs_list[i].tail[0] == max_q:
                         Ng.remove(i)
                         order.append(i)
+                        R.remove(jobs_list[i].head[0])
+                        t = t + jobs_list[i].body[0]
+                        break
 
     # S czas rozpoczecia zadania
     first = True
