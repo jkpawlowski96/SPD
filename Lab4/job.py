@@ -81,7 +81,6 @@ def jobs_load(file_path='../dane_testowe_RPQ/in50.txt'):
         for line in f:
             lines.append(line)
         param=lines.pop(0).strip().split('   ')
-        print('param[0]=',param[0],'param[1]=',param[1])
         jobs=int(param[0].strip())
         cols=int(param[1].strip())
         del param
