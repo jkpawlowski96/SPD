@@ -5,6 +5,7 @@ class HeapMax:
 
     def add(self, v):
         i = len(self.values)
+
         self.values.append(v)
         self.b(i)
 
@@ -34,7 +35,7 @@ class HeapMax:
 
     def max(self, drop=False):
         if drop is False:
-            return self.values[len(self.values) - 1]
+            return self.values[0]
         self.swap(0, len(self.values) - 1)
         v = self.pop(len(self.values) - 1)
         self.b2(0)
@@ -51,6 +52,7 @@ class HeapMin:
 
     def add(self, v):
         i = len(self.values)
+
         self.values.append(v)
         self.b(i)
 
@@ -80,7 +82,7 @@ class HeapMin:
 
     def min(self, drop=False):
         if drop is False:
-            return self.values[len(self.values) - 1]
+            return self.values[0]
         self.swap(0, len(self.values) - 1)
         v = self.pop(len(self.values) - 1)
         self.b2(0)
