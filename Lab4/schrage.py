@@ -1,5 +1,5 @@
 import numpy as np
-
+from heap import HeapMax, HeapMin
 
 def cmax(jobs_list, C):
     '''
@@ -24,14 +24,14 @@ def schrange(jobs_list):
     :return:
     '''
 
-    def arg_r(v,jobs):
+    def arg_r(v, jobs):
         l = []
         for i in jobs:
             if v == jobs_list[i].head[0]:
                 l.append(i)
         return l
 
-    def arg_q(v,jobs):
+    def arg_q(v, jobs):
         l = []
         for i in jobs:
             if v == jobs_list[i].tail[0]:
@@ -94,18 +94,31 @@ def schrange(jobs_list):
     return order, cmax
 
 
-
-def schrange_zly(jobs_list):
+def schrange_nlogn(jobs_list):
     '''
     Simulate RPQ problem
     :param jobs_list:
     :param order:
     :return:
     '''
+    def arg_r(v, jobs):
+        l = []
+        for i in jobs:
+            if v == jobs_list[i].head[0]:
+                l.append(i)
+        return l
 
-    R = []
+    def arg_q(v, jobs):
+        l = []
+        for i in jobs:
+            if v == jobs_list[i].tail[0]:
+                l.append(i)
+        return l
+
+    R = HeapMin()
+    Q = HeapMax()
     for job in jobs_list:
-        R.append(job.head[0])
+        R.add(job.head[0])
 
     S = np.zeros(len(jobs_list))  # momenty rozpoczęcia wykonywania zadań
     C = np.zeros(len(jobs_list))  # momenty zakończenia wykonywania zadań
@@ -116,41 +129,20 @@ def schrange_zly(jobs_list):
     order = []
 
     # Algorymt
-    t = min(R)
+    t = R.min()
     while len(Nn) > 0 or len(Ng) > 0:
-
-        for i in Nn.copy():
-            if jobs_list[i].head[0] <= t:
-                Ng.append(i)
-                Nn.remove(i)
-
+        while len(Nn) > 0 and R.min() <= t:
+            j = arg_r(R.min(True), Nn)[0]
+            Nn.remove(j)
+            Ng.append(j)
+            Q.add(jobs_list[j].tail[0])
         if len(Ng) == 0:
-            t = min(R)
-
-        # Znaleziono zadania o takim czasie
-        if len(Ng) > 0:
-
-            # Tylko jedno zadanie
-            if len(Ng) == 1:
-                i = Ng.pop()
-                order.append(i)
-                R.remove(jobs_list[i].head[0])
-
-            # Wiecej niż jedno zadanie
-            else:
-                Q = []
-                for i in Ng:
-                    Q.append(jobs_list[i].tail[0])
-
-                # Wybór po najdłuższym czasie dostawy
-                max_q = max(Q)
-                for i in Ng:
-                    if jobs_list[i].tail[0] == max_q:
-                        Ng.remove(i)
-                        order.append(i)
-                        R.remove(jobs_list[i].head[0])
-                        t = t + jobs_list[i].body[0]
-                        break
+            t = R.min()
+        else:
+            j = arg_q(Q.max(True), Ng)[0]
+            Ng.remove(j)
+            order.append(j)
+            t += jobs_list[j].body[0]
 
     # S czas rozpoczecia zadania
     first = True
@@ -238,3 +230,61 @@ def schargepmtn(jobs_list):
 
     return Cmax
 
+
+def schargepmtn_nlogn(jobs_list):
+    def arg_r(v, jobs):
+        l = []
+        for i in jobs:
+            if v == jobs_list[i].head[0]:
+                l.append(i)
+        return l
+
+    def arg_q(v, jobs):
+        l = []
+        for i in jobs:
+            if v == jobs_list[i].tail[0]:
+                l.append(i)
+        return l
+
+    R = HeapMin()
+    Q = HeapMax()
+    for job in jobs_list:
+        R.add(job.head[0])
+
+    # S = np.zeros(len(jobs_list))  # momenty rozpoczęcia wykonywania zadań
+    # C = np.zeros(len(jobs_list))  # momenty zakończenia wykonywania zadań
+
+    Nn = list(range(len(jobs_list)))
+    Ng = []
+
+    # order = []
+
+    # Algorymt
+    t = 0
+    l = 0
+    Cmax = 0
+    while len(Nn) > 0 or len(Ng) > 0:
+        while len(Nn) > 0 and R.min() <= t:
+            j = arg_r(R.min(True), Nn)[0]
+            Nn.remove(j)
+            Ng.append(j)
+            Q.add(jobs_list[j].tail[0])
+
+            if jobs_list[j].tail[0] > jobs_list[l].tail[0]:
+                jobs_list[l].body[0] = t - jobs_list[j].head[0]
+                t = jobs_list[j].head[0]
+
+                if jobs_list[l].body[0] > 0:
+                    Ng.append(l)
+                    Q.add(jobs_list[l].tail[0])
+
+        if len(Ng) == 0:
+            t = R.min()
+        else:
+            j = arg_q(Q.max(True), Ng)[0]
+            Ng.remove(j)
+            l = j
+            t = t + jobs_list[j].body[0]
+            Cmax = max(Cmax, t + jobs_list[j].tail[0])
+
+    return Cmax
