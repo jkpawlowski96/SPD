@@ -215,9 +215,9 @@ def schargepmtn(jobs_list):
     l=0
     Cmax=0
     while len(Nn) > 0 or len(Ng) > 0:
-        while len(Nn) > 0 and min(R) <= t:
-            j = arg_r(min(R), Nn)[0]
-            R.remove(min(R))
+        while len(Nn) > 0 and min_list(R) <= t:
+            j = arg_r(min_list(R), Nn)[0]
+            R.remove(min_list(R))
             Nn.remove(j)
             Ng.append(j)
             Q.append(jobs_list[j].tail[0])
@@ -231,10 +231,10 @@ def schargepmtn(jobs_list):
                     Q.append(jobs_list[l].tail[0])
                     
         if len(Ng) == 0:
-            t = min(R)
+            t = min_list(R)
         else:
-            j = arg_q(max(Q), Ng)[0]
-            Q.remove(max(Q))
+            j = arg_q(max_list(Q), Ng)[0]
+            Q.remove(max_list(Q))
             Ng.remove(j)
             l=j
             t=t+jobs_list[j].body[0]
