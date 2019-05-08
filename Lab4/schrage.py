@@ -1,6 +1,23 @@
 import numpy as np
 from heap import HeapMax, HeapMin
 
+
+def max_list(l):
+    m = 0
+    for v in l:
+        if m < v:
+            m = v
+    return m
+
+
+def min_list(l):
+    m = 99999999999
+    for v in l:
+        if m > v:
+            m = v
+    return m
+
+
 def cmax(jobs_list, C):
     '''
     Last delivered job time
@@ -52,19 +69,19 @@ def schrange(jobs_list):
     order = []
 
     # Algorymt
-    t = min(R)
+    t = min_list(R)
     while len(Nn) > 0 or len(Ng) > 0:
-        while len(Nn) > 0 and min(R) <= t:
-            j = arg_r(min(R), Nn)[0]
-            R.remove(min(R))
+        while len(Nn) > 0 and min_list(R) <= t:
+            j = arg_r(min_list(R), Nn)[0]
+            R.remove(min_list(R))
             Nn.remove(j)
             Ng.append(j)
             Q.append(jobs_list[j].tail[0])
         if len(Ng) == 0:
-            t = min(R)
+            t = min_list(R)
         else:
-            j = arg_q(max(Q), Ng)[0]
-            Q.remove(max(Q))
+            j = arg_q(max_list(Q), Ng)[0]
+            Q.remove(max_list(Q))
             Ng.remove(j)
             order.append(j)
             t += jobs_list[j].body[0]
