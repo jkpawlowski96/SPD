@@ -2,6 +2,12 @@ import numpy as np
 from heap import HeapMax, HeapMin
 
 
+class Cell:
+    def __init__(self, value, job):
+        self.value = value
+        self.job = job
+
+
 def max_list(l):
     m = 0
     for v in l:
@@ -118,24 +124,13 @@ def schrange_nlogn(jobs_list):
     :param order:
     :return:
     '''
-    def arg_r(v, jobs):
-        l = []
-        for i in jobs:
-            if v == jobs_list[i].head[0]:
-                l.append(i)
-        return l
-
-    def arg_q(v, jobs):
-        l = []
-        for i in jobs:
-            if v == jobs_list[i].tail[0]:
-                l.append(i)
-        return l
 
     R = HeapMin()
     Q = HeapMax()
+    i=0
     for job in jobs_list:
-        R.add(job.head[0])
+        R.add(Cell(value=job.head[0], job=i))
+        i += 1
 
     S = np.zeros(len(jobs_list))  # momenty rozpoczęcia wykonywania zadań
     C = np.zeros(len(jobs_list))  # momenty zakończenia wykonywania zadań
@@ -146,17 +141,17 @@ def schrange_nlogn(jobs_list):
     order = []
 
     # Algorymt
-    t = R.min()
+    t = R.min().value
     while len(Nn) > 0 or len(Ng) > 0:
-        while len(Nn) > 0 and R.min() <= t:
-            j = arg_r(R.min(True), Nn)[0]
+        while len(Nn) > 0 and R.min().value <= t:
+            j = R.min(True).job
             Nn.remove(j)
             Ng.append(j)
-            Q.add(jobs_list[j].tail[0])
+            Q.add(Cell(value=jobs_list[j].tail[0], job=j))
         if len(Ng) == 0:
-            t = R.min()
+            t = R.min().value
         else:
-            j = arg_q(Q.max(True), Ng)[0]
+            j = Q.max(True).job
             Ng.remove(j)
             order.append(j)
             t += jobs_list[j].body[0]
@@ -249,24 +244,13 @@ def schargepmtn(jobs_list):
 
 
 def schargepmtn_nlogn(jobs_list):
-    def arg_r(v, jobs):
-        l = []
-        for i in jobs:
-            if v == jobs_list[i].head[0]:
-                l.append(i)
-        return l
-
-    def arg_q(v, jobs):
-        l = []
-        for i in jobs:
-            if v == jobs_list[i].tail[0]:
-                l.append(i)
-        return l
 
     R = HeapMin()
     Q = HeapMax()
+    i=0
     for job in jobs_list:
-        R.add(job.head[0])
+        R.add(Cell(value=job.head[0], job=i))
+        i += 1
 
     # S = np.zeros(len(jobs_list))  # momenty rozpoczęcia wykonywania zadań
     # C = np.zeros(len(jobs_list))  # momenty zakończenia wykonywania zadań
@@ -281,11 +265,11 @@ def schargepmtn_nlogn(jobs_list):
     l = 0
     Cmax = 0
     while len(Nn) > 0 or len(Ng) > 0:
-        while len(Nn) > 0 and R.min() <= t:
-            j = arg_r(R.min(True), Nn)[0]
+        while len(Nn) > 0 and R.min().value <= t:
+            j = R.min(True).job
             Nn.remove(j)
             Ng.append(j)
-            Q.add(jobs_list[j].tail[0])
+            Q.add(Cell(value=jobs_list[j].tail[0], job=j))
 
             if jobs_list[j].tail[0] > jobs_list[l].tail[0]:
                 jobs_list[l].body[0] = t - jobs_list[j].head[0]
@@ -293,12 +277,12 @@ def schargepmtn_nlogn(jobs_list):
 
                 if jobs_list[l].body[0] > 0:
                     Ng.append(l)
-                    Q.add(jobs_list[l].tail[0])
+                    Q.add(Cell(value=jobs_list[l].tail[0], job=l))
 
         if len(Ng) == 0:
-            t = R.min()
+            t = R.min().value
         else:
-            j = arg_q(Q.max(True), Ng)[0]
+            j = Q.max(True).job
             Ng.remove(j)
             l = j
             t = t + jobs_list[j].body[0]
