@@ -1,3 +1,6 @@
+import heapq
+
+
 class HeapMax:
 
     def __init__(self):
@@ -7,26 +10,25 @@ class HeapMax:
         i = len(self.values)
 
         self.values.append(v)
-        self.b(i)
+        self.b_up(i)
 
-    def b(self, i):
-        if i == 0:
+    def b_up(self, i):
+        if i == 0 or i > len(self.values):
             return
-        p = int((i - 1)/2)
+        p = int((i - 1) / 2)
         if self.values[i] >= self.values[p]:
             self.swap(i, p)
-            self.b(p)
+            self.b_up(p)
 
-    def b2(self, i):
+    def b_down(self, i):
         l = i * 2 + 1
-        p = i * 2 + 2
-        if l < len(self.values):
-            self.b(l)
-            self.b2(l)
+        r = i * 2 + 2
 
-        if p < len(self.values):
-            self.b(p)
-            self.b2(p)
+        for child in [l, r]:
+            if child < len(self.values):
+                if self.values[child] > self.values[i]:
+                    self.swap(i, child)
+                    self.b_down(child)
 
     def swap(self, i, j):
         v = self.values[i]
@@ -36,13 +38,15 @@ class HeapMax:
     def max(self, drop=False):
         if drop is False:
             return self.values[0]
-        self.swap(0, len(self.values) - 1)
-        v = self.pop(len(self.values) - 1)
-        self.b2(0)
+        self.swap(0, self.last())
+        v = self.values.pop(self.last())
+        if len(self.values) > 0:
+            self.b_down(0)
+
         return v
 
-    def pop(self, i):
-        return self.values.pop(i)
+    def last(self):
+        return len(self.values) - 1
 
 
 class HeapMin:
@@ -54,26 +58,25 @@ class HeapMin:
         i = len(self.values)
 
         self.values.append(v)
-        self.b(i)
+        self.b_up(i)
 
-    def b(self, i):
-        if i == 0:
+    def b_up(self, i):
+        if i == 0 or i > len(self.values):
             return
         p = int((i - 1) / 2)
         if self.values[i] <= self.values[p]:
             self.swap(i, p)
-            self.b(p)
+            self.b_up(p)
 
-    def b2(self, i):
+    def b_down(self, i):
         l = i * 2 + 1
-        p = i * 2 + 2
-        if l < len(self.values):
-            self.b(l)
-            self.b2(l)
+        r = i * 2 + 2
 
-        if p < len(self.values):
-            self.b(p)
-            self.b2(p)
+        for child in [l, r]:
+            if child < len(self.values):
+                if self.values[child] < self.values[i]:
+                    self.swap(i, child)
+                    self.b_down(child)
 
     def swap(self, i, j):
         v = self.values[i]
@@ -83,11 +86,13 @@ class HeapMin:
     def min(self, drop=False):
         if drop is False:
             return self.values[0]
-        self.swap(0, len(self.values) - 1)
-        v = self.pop(len(self.values) - 1)
-        self.b2(0)
+        self.swap(0, self.last())
+        v = self.values.pop(self.last())
+        if len(self.values) > 0:
+            self.b_down(0)
+
         return v
 
-    def pop(self, i):
-        return self.values.pop(i)
+    def last(self):
+        return len(self.values) - 1
 
