@@ -94,4 +94,3 @@ def cmax_tab(jobs_list, order):
             c=c+jobs_list[num].body[0]
             cmax_tab.append(c)
     return cmax_tab
-
