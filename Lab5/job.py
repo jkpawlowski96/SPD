@@ -94,3 +94,31 @@ def jobs_load(file_path='../dane_testowe_RPQ/in50.txt'):
 
     return jobs_list
 
+def jobs_load2(file_path='./dane.txt'):
+    """
+    Load jobs from file.txt in format:
+                    1 2 4
+                    4 6 8
+                    1 3 4
+    :param file_path: path to .txt file
+    :return: list(Job)
+    """
+    with open(file_path, 'r') as f:
+        jobs_list=[]
+        lines=[]
+
+        '''Load NAME and PARAMETERS'''
+        for line in f:
+            lines.append(line)
+        name=lines.pop(0)
+        param=lines.pop(0)
+
+        """Load times"""
+        for line in lines:
+            if 'str' in line:
+                break
+            values = [int(i) for i in line.split()]
+            jobs_list.append(Job(values))
+
+    return jobs_list
+
