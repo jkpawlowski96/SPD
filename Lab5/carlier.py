@@ -1,10 +1,10 @@
 from job import *
-from schrage import schargepmtn_nlogn, schrange_nlogn
+from schrage import schrange, schargepmtn
 from schrage import cmax
 
 def carlier_algorithm(jobs_list, UB):
     jobs_list = jobs_list.copy()
-    pi, U = schrange_nlogn(jobs_list)
+    pi, U = schrange(jobs_list)
     pi_prim=[]
 
     if U < UB:
@@ -31,9 +31,8 @@ def carlier_algorithm(jobs_list, UB):
         for s in range(i, ind_b+1):
             suma=suma+jobs_list[pi[s]].body[0]
         if Cmax_val==jobs_list[pi[i]].head[0]+suma+jobs_list[b].tail[0]:
-            if ind_a==-1:
-                a=pi[i]
-                ind_a=i
+            a=pi[i]
+            ind_a=i
 
     #wyznaczenie c
     for i in range(ind_a, ind_b+1):
@@ -43,8 +42,9 @@ def carlier_algorithm(jobs_list, UB):
 
     #jesli nie znaleziono c
     if ind_c == -1:
-        return pi_prim
+        return pi_prim, UB
 
+    print('a=',a,'  b=',b,'  c=',c)
     #wyznaczenie bloku
     Kappa=[]
     for i in range(ind_c+1, ind_b+1):
@@ -76,11 +76,11 @@ def carlier_algorithm(jobs_list, UB):
     old_rc=jobs_list[c].head[0]
     jobs_list[c].head[0]=max(jobs_list[c].head[0], r_Kappa+p_Kappa)
 
-    LB=schargepmtn_nlogn(jobs_list)
+    LB=schargepmtn(jobs_list)
     LB=max(h_Kappa, h_Kappa_u, LB)
     
     if LB<UB: #jesli jest sens...
-        pi_prim = carlier_algorithm(jobs_list, UB)
+        pi_prim, x = carlier_algorithm(jobs_list, UB)
 
     #powrot z wartoscia r
     jobs_list[c].head[0]=old_rc
@@ -89,15 +89,15 @@ def carlier_algorithm(jobs_list, UB):
     old_qc=jobs_list[c].tail[0]
     jobs_list[c].tail[0]=max(jobs_list[c].tail[0], q_Kappa+p_Kappa)
     
-    LB=schargepmtn_nlogn(jobs_list)
+    LB=schargepmtn(jobs_list)
     LB=max(h_Kappa, h_Kappa_u, LB)
 
     if LB<UB: #jesli jest sens...
-        pi_prim = carlier_algorithm(jobs_list, UB)
+        pi_prim, x = carlier_algorithm(jobs_list, UB)
 
     #powrot z wartoscia q
     jobs_list[c].tail[0]=old_qc
-    return pi_prim
+    return pi_prim, UB
 
     
 def cmax_tab(jobs_list, order):
