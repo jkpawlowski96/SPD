@@ -16,27 +16,33 @@ def carlier_algorithm(jobs_list, UB):
 
     S, C, cmax_pi =calc_s_c(pi, jobs_list.copy())
 
+    Rpi = [R[i] for i in pi]
+    Ppi = [P[i] for i in pi]
+    Qpi = [Q[i] for i in pi]
+    Cpi = [C[i] for i in pi]
+
+
     #wyznaczenie b
     b=[]
     J = list(range(1, len(pi)))
     for j in J:
-        if cmax_pi == (C[j] + Q[j]):
+        if cmax_pi == (Cpi[j] + Qpi[j]):
             b.append(j)
     b = max(b)
 
     #wyznaczenie a
     a =[]
     for j in J:
-        sum_jb = sum([P[s] for s in range(j, b+1)]) +Q[b]
-        if cmax_pi == (R[j] + sum_jb ):
+        sum_jb = sum([Ppi[s] for s in range(j, b+1)])
+        if cmax_pi == (Rpi[j] + sum_jb + Qpi[b]):
             a.append(j)
     a = min(a)
 
     #wyznaczenie c
     c = []
-    J = list(range(a, b))
+    J = list(range(a, b+1))
     for j in J:
-        if Q[j] == Q[b]:
+        if Qpi[j] < Qpi[b]:
             c.append(j)
 
     # jesli nie znaleziono c
@@ -45,59 +51,38 @@ def carlier_algorithm(jobs_list, UB):
 
     c = max(c)
 
+    K = list(range(c+1, b+1))
 
-    #wyznaczenie bloku
-    Kappa=[]
-    for i in range(c+1, b+1):
-        Kappa.append(i)
+    old = jobs_list[pi[c]].head[0]
+    rk=min([Rpi[i] for i in K])
+    qk=min([Qpi[i] for i in K])
+    pk=sum([Ppi[i] for i in K])
 
+    jobs_list[pi[c]].head[0] = max(Rpi[c], rk + pk)
+    LB = schargepmtn(jobs_list)
+    #hK = [R[i]+P[i]+Q[i] for i in K]
+    #hKc = hK.append(R[c]+P[c]+Q[c])
 
-    r_list=[]
-    p_list=[]
-    q_list=[]
-    for kappa in Kappa:
-        r_list.append(jobs_list[pi[kappa]].head[0])
-        p_list.append(jobs_list[pi[kappa]].body[0])
-        q_list.append(jobs_list[pi[kappa]].tail[0])
+    #LB = max(hK, hKc, LB)
 
-    r_Kappa=min(r_list)
-    q_Kappa=min(q_list)
-    p_Kappa=sum(p_list)
+    if LB < UB:
+        carlier_algorithm(jobs_list.copy(), UB.copy())
+    jobs_list[pi[c]].head[0] = old
 
-    h_Kappa=r_Kappa+p_Kappa+q_Kappa
-        #Kappa u {c}
-    r_Kappa_u=min(r_Kappa, jobs_list[c].head[0])
-    q_Kappa_u=min(q_Kappa, jobs_list[c].tail[0])
-    p_Kappa_u=p_Kappa+jobs_list[c].body[0]
-    
-    h_Kappa_u=r_Kappa_u+p_Kappa_u+q_Kappa_u
+    ########
+    old = jobs_list[pi[c]].tail[0]
+    jobs_list[pi[c]].tail[0] = max(Qpi[c], qk + pk)
 
+    LB = schargepmtn(jobs_list)
+    #hK = [R[i] + P[i] + Q[i] for i in K]
+    #hKc = hK.append(R[c] + P[c] + Q[c])
 
-    #lewy potomek - zmiana wartosci r zadania krytycznego
-    old_rc=jobs_list[c].head[0]
-    jobs_list[c].head[0]=max(jobs_list[c].head[0], r_Kappa+p_Kappa)
+    #LB = max(hK, hKc, LB)
 
-    LB=schargepmtn_nlogn(jobs_list)
-    LB=max(h_Kappa, h_Kappa_u, LB)
-    
-    if LB<UB: #jesli jest sens...
-        pi_prim = carlier_algorithm(jobs_list, UB)
+    if LB < UB:
+        carlier_algorithm(jobs_list.copy(), UB.copy())
+    jobs_list[pi[c]].tail[0] = old
 
-    #powrot z wartoscia r
-    jobs_list[c].head[0]=old_rc
-
-    #prawy potomek - zmiana wartosci q zadania krytycznego
-    old_qc=jobs_list[c].tail[0]
-    jobs_list[c].tail[0]=max(jobs_list[c].tail[0], q_Kappa+p_Kappa)
-    
-    LB=schargepmtn_nlogn(jobs_list)
-    LB=max(h_Kappa, h_Kappa_u, LB)
-
-    if LB<UB: #jesli jest sens...
-        pi_prim = carlier_algorithm(jobs_list, UB)
-
-    #powrot z wartoscia q
-    jobs_list[c].tail[0]=old_qc
     return pi_prim
 
     

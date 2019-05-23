@@ -71,7 +71,7 @@ tab=cmax_tab(jobs_list, order)
 tab_end=[]
 for j in range(len(tab)):
     tab_end.append(tab[j]+jobs_list[order[j]].tail[0])
-print('in200.txt',max(tab_end), '   --->   ', 6398)
+print('in200.txt', max(tab_end), '   --->   ', 6398)
 sum += 1
 if max(tab_end)==6398:
     ok+=1
