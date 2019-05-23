@@ -1,5 +1,6 @@
 import numpy as np
 from heap import HeapMax, HeapMin
+import copy
 
 
 class Cell:
@@ -39,14 +40,15 @@ def cmax(jobs_list, C):
     return max_value
 
 
-def schrange(jobs_list):
+def schrange(jobs):
+    jobs_list=copy.deepcopy(jobs)
     '''
     Simulate RPQ problem
     :param jobs_list:
     :param order:
     :return:
     '''
-
+    jobs_list=jobs.copy()
     def arg_r(v, jobs):
         l = []
         for i in jobs:
@@ -115,8 +117,9 @@ def schrange(jobs_list):
 
     return order, cmax
 
-def schargepmtn(jobs_list):
-
+def schargepmtn(jobs):
+    jobs_list=copy.deepcopy(jobs)
+    
     def arg_r(v, jobs):
         l = []
         for i in jobs:
