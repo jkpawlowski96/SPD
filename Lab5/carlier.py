@@ -1,53 +1,54 @@
 from job import *
-from schrage import schargepmtn_nlogn, schrange_nlogn
-from schrage import cmax
+from schrage import *
+
 
 def carlier_algorithm(jobs_list, UB):
-    jobs_list = jobs_list.copy()
-    pi, U = schrange_nlogn(jobs_list)
+    R = [j.head[0] for j in jobs_list]
+    P = [j.body[0] for j in jobs_list]
+    Q = [j.tail[0] for j in jobs_list]
+
+    pi, U = schrange_nlogn(jobs_list.copy())
     pi_prim=[]
 
     if U < UB:
         UB = U
-        pi_prim = pi[:]
-    ind_c=-1
+        pi_prim = pi.copy()
 
-    tab=cmax_tab(jobs_list, pi) #tablica zakonczenia wykonywania (p) kolejnych zadan
-    tab_end=[]
-    for j in range(len(tab)):
-        tab_end.append(tab[j]+jobs_list[pi[j]].tail[0])
-    Cmax_val=max(tab_end)
-    
+    S, C, cmax_pi =calc_s_c(pi, jobs_list.copy())
+
     #wyznaczenie b
-    for i in range(len(pi)):
-        if Cmax_val==tab[i]+jobs_list[pi[i]].tail[0]:
-            b=pi[i]
-            ind_b=i
+    b=[]
+    J = list(range(1, len(pi)))
+    for j in J:
+        if cmax_pi == (C[j] + Q[j]):
+            b.append(j)
+    b = max(b)
 
     #wyznaczenie a
-    ind_a=-1
-    for i in range(len(pi)):
-        suma=0
-        for s in range(i, ind_b+1):
-            suma=suma+jobs_list[pi[s]].body[0]
-        if Cmax_val==jobs_list[pi[i]].head[0]+suma+jobs_list[b].tail[0]:
-            if ind_a==-1:
-                a=pi[i]
-                ind_a=i
+    a =[]
+    for j in J:
+        sum_jb = sum([P[s] for s in range(j, b+1)]) +Q[b]
+        if cmax_pi == (R[j] + sum_jb ):
+            a.append(j)
+    a = min(a)
 
     #wyznaczenie c
-    for i in range(ind_a, ind_b+1):
-        if jobs_list[pi[i]].tail[0]<jobs_list[b].tail[0]:
-            c=pi[i]
-            ind_c=i
+    c = []
+    J = list(range(a, b))
+    for j in J:
+        if Q[j] == Q[b]:
+            c.append(j)
 
-    #jesli nie znaleziono c
-    if ind_c == -1:
+    # jesli nie znaleziono c
+    if len(c)==0:
         return pi_prim
+
+    c = max(c)
+
 
     #wyznaczenie bloku
     Kappa=[]
-    for i in range(ind_c+1, ind_b+1):
+    for i in range(c+1, b+1):
         Kappa.append(i)
 
 
@@ -111,3 +112,8 @@ def cmax_tab(jobs_list, order):
             c=c+jobs_list[num].body[0]
             cmax_tab.append(c)
     return cmax_tab
+
+
+
+
+

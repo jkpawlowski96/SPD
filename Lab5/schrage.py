@@ -181,6 +181,34 @@ def schrange_nlogn(jobs_list):
     return order, cmax
 
 
+def calc_s_c(order, jobs_list):
+    S = np.zeros(len(jobs_list))  # momenty rozpoczęcia wykonywania zadań
+    C = np.zeros(len(jobs_list))  # momenty zakończenia wykonywania zadań
+    # S czas rozpoczecia zadania
+    first = True
+    for i in order:
+        if first:
+            S[i] = jobs_list[i].head[0]
+            i_last = i
+            first = False
+        else:
+            S[i] = max(jobs_list[i].head[0], S[i_last] + jobs_list[i_last].body[0])
+            i_last = i
+
+    # C czas zakonczenia zadania
+    for i in order:
+        C[i] = S[i] + jobs_list[i].body[0]
+
+        # Obliczenie cmax
+        cmax = []
+        for i in order:
+            cmax.append(C[i] + jobs_list[i].tail[0])
+        # Najdłuższy czas jako ostatnie zakonczone zadania
+        cmax = max(cmax)
+
+    return S, C, cmax
+
+
 def schargepmtn(jobs_list):
 
     def arg_r(v,jobs):
