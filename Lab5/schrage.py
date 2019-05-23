@@ -75,23 +75,22 @@ def schrange(jobs_list):
     order = []
 
     # Algorymt
-    t = min_list(R)
-    while len(Nn) > 0 or len(Ng) > 0:
-        while len(Nn) > 0 and min_list(R) <= t:
-            j = arg_r(min_list(R), Nn)[0]
-            R.remove(min_list(R))
+    t = min(R)
+    while (len(Nn) > 0 or len(Ng) > 0):
+        while (len(Nn) != 0 and min(R) <= t):
+            j= arg_r(min(R), Nn)[0]
+            R.remove(min(R))
             Nn.remove(j)
             Ng.append(j)
             Q.append(jobs_list[j].tail[0])
         if len(Ng) == 0:
-            t = min_list(R)
+            t = min(R)
         else:
-            j = arg_q(max_list(Q), Ng)[0]
-            Q.remove(max_list(Q))
+            j = arg_q(max(Q), Ng)[0]
+            Q.remove(max(Q))
             Ng.remove(j)
             order.append(j)
             t += jobs_list[j].body[0]
-
     # S czas rozpoczecia zadania
     first = True
     for i in order:
@@ -116,6 +115,66 @@ def schrange(jobs_list):
 
     return order, cmax
 
+def schargepmtn(jobs_list):
+
+    def arg_r(v, jobs):
+        l = []
+        for i in jobs:
+            if v == jobs_list[i].head[0]:
+                l.append(i)
+        return l
+
+    def arg_q(v, jobs):
+        l = []
+        for i in jobs:
+            if v == jobs_list[i].tail[0]:
+                l.append(i)
+        return l
+
+    R = []
+    Q = []
+    for job in jobs_list:
+        R.append(job.head[0])
+
+    #S = np.zeros(len(jobs_list))  # momenty rozpoczęcia wykonywania zadań
+    #C = np.zeros(len(jobs_list))  # momenty zakończenia wykonywania zadań
+
+    Nn = list(range(len(jobs_list)))
+    Ng = []
+
+    #order = []
+
+    # Algorymt
+    t = 0
+    l=0
+    Cmax=0
+    while len(Nn) > 0 or len(Ng) > 0:
+        while len(Nn) > 0 and min(R) <= t:
+            j= arg_r(min(R), Nn)[0]
+            R.remove(min(R))
+            Nn.remove(j)
+            Ng.append(j)
+            Q.append(jobs_list[j].tail[0])
+            
+            if jobs_list[j].tail[0]>jobs_list[l].tail[0]:
+                jobs_list[l].body[0]=t-jobs_list[j].head[0]
+                t=jobs_list[j].head[0]
+
+                if jobs_list[l].body[0]>0:
+                    Ng.append(l)
+                    Q.append(jobs_list[l].tail[0])
+                    
+        if len(Ng) == 0:
+            t = min(R)
+        else:
+            j = arg_q(max(Q), Ng)[0]
+            Q.remove(max(Q))
+            Ng.remove(j)
+            l=j
+            t=t+jobs_list[j].body[0]
+            Cmax=max(Cmax, t+jobs_list[j].tail[0])
+
+    return Cmax
 
 def schrange_nlogn(jobs_list):
     '''
@@ -181,67 +240,6 @@ def schrange_nlogn(jobs_list):
     return order, cmax
 
 
-def schargepmtn(jobs_list):
-
-    def arg_r(v,jobs):
-        l = []
-        for i in jobs:
-            if v == jobs_list[i].head[0]:
-                l.append(i)
-        return l
-
-    def arg_q(v,jobs):
-        l = []
-        for i in jobs:
-            if v == jobs_list[i].tail[0]:
-                l.append(i)
-        return l
-
-    R = []
-    Q = []
-    for job in jobs_list:
-        R.append(job.head[0])
-
-    #S = np.zeros(len(jobs_list))  # momenty rozpoczęcia wykonywania zadań
-    #C = np.zeros(len(jobs_list))  # momenty zakończenia wykonywania zadań
-
-    Nn = list(range(len(jobs_list)))
-    Ng = []
-
-    #order = []
-
-    # Algorymt
-    t = 0
-    l=0
-    Cmax=0
-    while len(Nn) > 0 or len(Ng) > 0:
-        while len(Nn) > 0 and min_list(R) <= t:
-            j = arg_r(min_list(R), Nn)[0]
-            R.remove(min_list(R))
-            Nn.remove(j)
-            Ng.append(j)
-            Q.append(jobs_list[j].tail[0])
-            
-            if jobs_list[j].tail[0]>jobs_list[l].tail[0]:
-                jobs_list[l].body[0]=t-jobs_list[j].head[0]
-                t=jobs_list[j].head[0]
-
-                if jobs_list[l].body[0]>0:
-                    Ng.append(l)
-                    Q.append(jobs_list[l].tail[0])
-                    
-        if len(Ng) == 0:
-            t = min_list(R)
-        else:
-            j = arg_q(max_list(Q), Ng)[0]
-            Q.remove(max_list(Q))
-            Ng.remove(j)
-            l=j
-            t=t+jobs_list[j].body[0]
-            Cmax=max(Cmax, t+jobs_list[j].tail[0])
-
-    return Cmax
-
 
 def schargepmtn_nlogn(jobs_list):
 
@@ -289,3 +287,13 @@ def schargepmtn_nlogn(jobs_list):
             Cmax = max(Cmax, t + jobs_list[j].tail[0])
 
     return Cmax
+
+
+
+
+
+
+
+
+
+            
