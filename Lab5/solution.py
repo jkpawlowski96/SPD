@@ -1,15 +1,17 @@
 from job import *
 from schrage import *
 from carlier import *
+
 '''
 UB=100000000
-nazwa='./dane_testowe_RPQ/ola3.txt.'
+nazwa='./dane_testowe_RPQ/ola7.txt.'
 jobs_list = jobs_load2(nazwa)
 
 order, Cmax = carlier_algorithm(jobs_list,10000000)
 #print('wynik Carliera',order,)
 #print(order)
-print(Cmax)
+print(Cmax, order)
+
 '''
 '''
 print('\n ----------------------------')
@@ -35,13 +37,14 @@ if len(tab_end)>0:
     print(data,max(tab_end), '   --->   ')
 
 '''
-pliki=[0,1,3,4]
+
+pliki=[2,0,1,3,4]
 wynik=[228, 3026, 3665, 3309, 3191, 3618, 3446, 3821, 3634]
 ok=0;
-for n in pliki:
+for n in range(9):
     nazwa='./dane_testowe_RPQ/data00'+str(n)+'.txt.'
     jobs_list = jobs_load2(nazwa)
-    order, Cmax = carlier_algorithm(jobs_list, 10000000)
+    order, Cmax, lb = carlier_algorithm(jobs_list, 10000000,0)
 
     data='data00'+str(n)+'.txt'
 
@@ -54,7 +57,7 @@ for n in pliki:
     print(data,Cmax, '   --->   ', wynik[n], '   ',stat)
     
 jobs_list = jobs_load('./dane_testowe_RPQ/in50.txt')
-order, Cmax = carlier_algorithm(jobs_list, 10000000)
+order, Cmax, lb = carlier_algorithm(jobs_list, 10000000,0)
 
 if Cmax==1492:
     ok+=1
@@ -64,7 +67,7 @@ else:
 print('in50.txt',Cmax, '   --->   ', 1492, '   ',stat)
 
 jobs_list = jobs_load('./dane_testowe_RPQ/in100.txt')
-order, Cmax = carlier_algorithm(jobs_list, 10000000)
+order, Cmax, lb = carlier_algorithm(jobs_list, 10000000,0)
 
 if Cmax==3070:
     ok+=1
@@ -74,7 +77,7 @@ else:
 print('in100.txt',Cmax, '   --->   ', 3070, '   ',stat)
 
 jobs_list = jobs_load('./dane_testowe_RPQ/in200.txt')
-order, Cmax = carlier_algorithm(jobs_list, 10000000)
+order, Cmax, lb = carlier_algorithm(jobs_list, 10000000,0)
 
 if Cmax==6398:
     ok+=1
