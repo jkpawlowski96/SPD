@@ -1,6 +1,6 @@
 from ortools.linear_solver import pywraplp
 from pathlib import Path
-
+from ortools.sat.python import cp_model
 
 class RPQ():
     def __init__(self,r,p,q):
@@ -74,11 +74,58 @@ def GetRPQsFromFile(file_path):
             jobs_list.append(RPQ(values[0], values[1], values[2]))
         return jobs_list
 
+def CP(jobs, instanceName):
 
+    model_cp=cp_model.CpModel()
+
+    variablesMaxValue=0
+    for a in range(len(jobs)):
+        variablesMaxValue += jobs[a].R + jobs[a].P + jobs[a].Q
+
+    #variables:
+    alfasMatrix={}#attention!dictionary−notlist!
+    for i in range(len(jobs)):
+        for j in range(len(jobs)):
+            alfasMatrix[i,j]=model_cp.NewIntVar(0,1,"alfa"+str(i)+"_"+str(j)) #IntVar -> NewIntVar
+    starts=[]
+    for i in range(len(jobs)):
+        starts.append(model_cp.NewIntVar(0,variablesMaxValue,"starts"+str(i)))
+    cmax=model_cp.NewIntVar(0, variablesMaxValue, "cmax")
+
+
+    #constraints:
+    for i in range(len(jobs)):
+        model_cp.Add(starts[i]>=jobs[i].R)
+        model_cp.Add(cmax>=starts[i]+jobs[i].P+jobs[i].Q)
+    for i in range(len(jobs)):
+        for j in range(i+1,len(jobs)):
+            model_cp.Add(starts[i]+jobs[i].P<=starts[j]
+                +alfasMatrix[i,j]*variablesMaxValue)
+            model_cp.Add(starts[j]+jobs[j].P<=starts[i]
+                +alfasMatrix[j,i]*variablesMaxValue)
+            model_cp.Add(alfasMatrix[i,j]+alfasMatrix[j,i]==1)
+
+    # solver:
+    model_cp.Minimize(cmax)
+    solver = cp_model.CpSolver() #Solve() -> CPSOlver()
+    status = solver.Solve(model_cp)
+    if (status is not cp_model.OPTIMAL):
+        print("Notoptimal!")
+    print(instanceName, "Cmax:", solver.ObjectiveValue())
+    pi = []
+    for i in range(len(starts)):
+        pi.append((i, solver.Value(starts[i]))) # 
+    pi.sort(key=lambda x: x[1])
+    print(pi)
+    
 def main():
-    file_paths = [ 'in000.txt','in50.txt','in100.txt']
+    file_paths = [ 'in000.txt','in001.txt']
     for i in range(len (file_paths)):
+        print('Milp')
         jobs = GetRPQsFromFile (file_paths[i])
         Milp(jobs, file_paths[i])
+        print('Cp')
+        jobs = GetRPQsFromFile (file_paths[i])
+        CP(jobs, file_paths[i])
 
 main()
