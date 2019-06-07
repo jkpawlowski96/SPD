@@ -89,10 +89,67 @@ def Milp(jobs,instanceName):
     pi.sort(key=lambda x: x[1])
     #print(pi)
 
+def CP(jobs, instanceName):
+    model_cp=cp_model.CpModel()
+    
+    variablesMaxValue=0
+    time=0
+    for i in range(len(jobs)):
+        time+=jobs[i].P
+    for i in range(len(jobs)):
+        if(time-jobs[i].D>0):
+            variablesMaxValue+=(jobs[i].W*(time-jobs[i].D))
+            
+    #variables:
+    alfasMatrix={}#attention!dictionary−notlist!
+    for i in range(len(jobs)):
+        for j in range(len(jobs)):
+            alfasMatrix[i,j]=model_cp.NewIntVar(0,1,"alfa"+str(i)+"_"+str(j))
+
+
+    starts=[]
+    ends=[]
+    delays=[]
+    for i in range(len(jobs)):
+        starts.append(model_cp.NewIntVar(0,variablesMaxValue,"starts"+str(i)))
+        ends.append(model_cp.NewIntVar(0,variablesMaxValue,"ends"+str(i)))
+        delays.append(model_cp.NewIntVar(0,variablesMaxValue,"delays"+str(i)))
+        
+    wiTi=model_cp.NewIntVar(0,variablesMaxValue,"wiTi")
+    
+    #constraints:
+    for i in range(len(jobs)):
+        model_cp.Add(ends[i]>=starts[i]+jobs[i].P)
+        model_cp.Add(delays[i]==jobs[i].W*(ends[i]-jobs[i].D))
+        
+    for i in range(len(jobs)):
+        for j in range(i+1,len(jobs)):
+            model_cp.Add(starts[i]+jobs[i].P<=starts[j]
+                +alfasMatrix[i,j]*variablesMaxValue)
+            model_cp.Add(starts[j]+jobs[j].P<=starts[i]
+                +alfasMatrix[j,i]*variablesMaxValue)
+            model_cp.Add(alfasMatrix[i,j]+alfasMatrix[j,i]==1)
+
+    for i in range(len(delays)):
+        wiTi+=delays[i]
+    #solver:
+    model_cp.Minimize(wiTi)
+    solver = cp_model.CpSolver()
+    status=solver.Solve(model_cp)
+    if(status is not cp_model.OPTIMAL):
+        print("Notoptimal!")
+    print("  CP: ",instanceName,"Cmax:",solver.ObjectiveValue())
+    pi=[]
+    for i in range(len(starts)):
+        pi.append((i,solver.Value(starts[i])))
+    pi.sort(key=lambda x: x[1])
+    #print(pi)
+
 def main():
     file_paths = ['witi1.txt','witi2.txt','witi3.txt','witi4.txt','witi5.txt','witi6.txt','witi7.txt','witi8.txt','witi9.txt','witi10.txt','witi11.txt',]
     for i in range(len (file_paths)):
         jobs = GetRPQsFromFile (file_paths[i])
         Milp(jobs, file_paths[i])
-
+        CP(jobs, file_paths[i])
+        
 main()
